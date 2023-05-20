@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理系统登录</title>
+    <link rel="stylesheet" href="./js/jquery-ui-themes-1.13.2/themes/base/jquery-ui.css">
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/jquery-ui-1.13.2/jquery-ui.min.js"></script>
+    <script src="./js/bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="./js/bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css">
+    <style>
+        body {
+            width: 1479px;
+            height: 753px;
+			margin: 0;
+			padding: 0;
+			display: flex;
+            /* 垂直居中 */
+			justify-content: center;
+            /* 水平居中 */
+			align-items: center;
+            /* 设置背景图片 */
+            background-image: url("E:/IDEA-pro/springst/group14/src/main/webapp/image/背景.png");
+
+            /* 背景图片的重复方式 */
+            background-repeat: no-repeat;
+
+            /* 设置背景图片的位置 */
+            background-position: center;
+            /* 背景图片的大小 */
+            background-size:1479px 753px;
+            /* 背景图片虚化 */
+            backdrop-filter: blur(3px);
+
+		}
+        .container {
+            width: 560px;
+            height: 350px;
+			padding: 55px;
+            /* 垂直居中 */
+			justify-content: center;
+            /* 水平居中 */
+			align-items: center;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            background-color: #fff;
+            /* 设置背景图片
+            background-image: url("E:/IDEA-pro/springst/group14/src/main/webapp/image/login1.jpg");
+
+            背景图片的重复方式
+            background-repeat: no-repeat;
+
+            设置背景图片的位置
+            background-position: center;
+            背景图片的大小
+            background-size:560px 350px;
+            */
+		}
+        /* .container input,button{
+            background-color: transparent;
+            border: 1px solid black;
+            outline: none;
+        } */
+        .container button{
+            background-color: rgb(94, 179, 210);
+        }
+        .container button:hover{
+            background-color: rgb(131, 201, 226);
+        }
+        #username{
+            margin-top: 10px;
+        }
+        .identy{
+            width: 240px;
+            height: 35px;
+        }
+    </style>
+</head>
+    <body>
+        <div id="container" class="container">
+                <h1>课程管理系统</h1>
+                <br>
+                <span id="prompt" style="color:red"></span>
+                <br>
+                <label for="username">用户名:</label>
+                <input id="username" type="text">
+                <br><br>
+                <label for="password">密&nbsp;&nbsp;&nbsp;码:</label>
+                <input id="password" type="password"> 
+                <br><br>
+                <button type="button" class="identy" onmouseover="">登录</button>
+        </div>
+    </body>
+    <script>
+        $(function(){
+            $('.identy').click(function(){
+                var username=document.getElementById('username')
+                var password=document.getElementById('password')
+                if(username.value==""){
+                    var prompt=document.getElementById('prompt')
+                    return prompt.innerHTML="用户名不能为空"
+                }else if(password.value==""){
+                    var prompt=document.getElementById('prompt')
+                    return prompt.innerHTML="密码不能为空"
+                }else{
+                    $.post('http://localhost:8080/group14/login',{name:username.value,password:password.value},function(res){
+                        if(res.status!=1){
+                            var prompt=document.getElementById('prompt')
+                            return prompt.innerHTML=res.msg
+                        }
+                        localStorage.setItem("token",res.data)
+                        window.location.href='E:/IDEA-pro/springst/group14/src/main/webapp/templates/schoolName.html'
+                        return alert("登陆成功")
+                    })
+                }
+            })
+        })
+    </script>
+</html>
+<html>

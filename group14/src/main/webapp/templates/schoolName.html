@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理系统</title>
+    <!-- <link rel="stylesheet" href="./js/jquery-ui-themes-1.13.2/themes/base/jquery-ui.css"> -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/jquery-ui-1.13.2/jquery-ui.min.js"></script>
+    <script src="./js/bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="./js/bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css">
+    <style>
+        #header{
+            background-color:hsl(153, 98%, 36%,0.7);
+            height:50px;
+            width: 1481.5px;
+            position:absolute;
+            text-align: center;
+        }
+        #logo{
+            /* background-color: #000; */
+            position: absolute;
+            font-size: 20px;
+            margin-top: 10px;
+            margin-left: 15px;
+            width: 150px;
+            height: 50px;
+        }
+        #logo-lg{
+            text-decoration-line: none ;
+            float:left;
+            color:white;
+        }
+        #body{
+            display: flex;
+            width: 100%;  
+            height: 728px;
+            background:rgb(251, 251, 251);
+        }
+        #menu{
+            margin: 0%;
+            background: #222d32;
+            height: 728px;
+            width: 150px;
+            float: left;
+            text-align: center;
+        }
+        #menu-link{
+            margin-top: 50px;
+            width: 150px;
+            text-decoration: none;
+        }
+        .selected{
+            color: #b8c7ce;
+            text-decoration: none;
+            display:block;
+            position: relative;
+            text-align: left;
+            padding: 12px 5px 12px 20px;
+            border-left: 3px solid #222d32;
+        }
+        .selected:hover{
+            color: white;
+            border-left: 3px solid hsl(153, 98%, 36%);
+        }
+        #content{
+            flex:1;
+            background:rgb(251, 251, 251);
+            height: calc(728px-50px);
+            float: left;
+            margin-top: 50px;
+            /* background: red; */
+        }
+        #footer{
+            height:25px;
+            background-color:hsl(153, 98%, 36%);
+            clear:both;
+            text-align:center;
+        }
+        p{
+            color: #000;
+            font-size: 40px;
+            margin: 0%;
+        }
+        #search{
+            width: 1310px;
+            height: 58px;
+            margin: 0%;
+        }
+        #btnadd{
+            height: auto;
+        }
+        #box1{
+            display: block;
+            width: 150px;
+            height: 40px;
+            background:white;
+            color: red;
+        }
+
+        #box1:hover{
+            display: block;
+            width: 10px;
+            height: 40px;
+            background: blue;
+        }
+
+        #files,#files1{
+          width: 60px;
+          height: 80px;
+          opacity: 0.0;
+        }
+        .my-tag {   
+            /* 设置标签的宽度和高度 */
+            width: 60px;
+            height: 80px;
+            
+            /* 设置背景图片 */
+            background-image: url("E:/IDEA-pro/springst/group14/src/main/webapp/image/add.jpg");
+            
+            /* 背景图片的重复方式 */
+            background-repeat: no-repeat;
+            
+            /* 设置背景图片的位置 */
+            background-position: center;
+            
+            /* 背景图片的大小 */
+            background-size:60px 80px;
+        }
+        .my-tag1 {   
+            /* 设置标签的宽度和高度 */
+            width: 60px;
+            height: 80px;
+            
+            /* 设置背景图片 */
+            /* background-image: url("E:/IDEA-pro/springst/group14/src/main/webapp/image/add.jpg"); */
+            
+            /* 背景图片的重复方式 */
+            background-repeat: no-repeat;
+            
+            /* 设置背景图片的位置 */
+            background-position: center;
+            
+            /* 背景图片的大小 */
+            background-size:60px 80px;
+        }
+        .table-container {
+            width: 100%;
+            height: 621px;
+            overflow: auto;
+        }
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #user{
+            width: 80px;
+            float: right;
+            font-size: 15px;
+            margin-right: 5px;
+        }
+        #out{
+            text-decoration-line: none;
+            color:#000;
+        }
+        #out:hover{
+            color:aqua;
+        }
+    </style>
+</head>
+
+<body>
+<div id="container">
+    <!-- 顶部导航栏 -->
+    <header id="header">
+            <div id="logo">
+                <a id="logo-lg" href="#">
+                    课程管理系统
+                </a>
+            </div>
+            <div id="user">
+                <span id="username">用户名:</span>
+                <br>
+                <a id="out" href="./login.html" onclick="out()">退出登录</a>
+            </div>
+            <!-- Links -->
+    </header>
+    <!-- 编辑表单 -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div align="center">
+                        <div class="my-tag1">
+                            <input type="file" id="files1" name="files1" onchange="previewImage1()"><br/>
+                        </div>
+                        <br>
+                        <label for="cname1">课程名称:</label>
+                        <input type="text" id="cname1" name="cname1"/><br><br>
+                        <label for="hours1">课程时长:</label>
+                        <input type="text" id="hours1" name="hours1"><br><br>
+                        <label for="sid">学院编号:</label>
+                        <input type="text" id="sid1" name="sid1"><br><br>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button id="clear1" type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button id="save1" type="button" class="btn btn-primary" data-bs-dismiss="modal">保存修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 添加表单 -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">添加课程</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div align="center">
+                            <div class="my-tag">
+                                <input type="file" id="files" name="files" onchange="previewImage()"><br/>
+                            </div>
+                            <br>
+                            <label for="cname">课程名称:</label>
+                            <input type="text" id="cname" name="cname"/><br><br>
+                            <label for="hours">课程时长:</label>
+                            <input type="text" id="hours" name="hours"><br><br>
+                            <label for="sid">学院编号:</label>
+                            <input type="text" id="sid" name="sid"><br><br>
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                    <button id="clear" type="button" class="btn btn-secondary">清空</button>
+                    <button id="save" type="button" class="btn btn-primary" data-bs-dismiss="modal">保存添加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="body">
+        <!-- 左侧导航栏 -->
+        <div id="menu">
+            <div id="menu-link">
+                        <a id="selectAll" class="selected" href="#">所有课程</a>
+                        <a id="allschools" class="selected" href="#">所有学院</a>
+            </div>
+        </div>
+        <!-- 主体部分 -->
+        <div id="content">
+            <!-- 查询部分 -->
+            <div id="search">
+                <button id="btnadd" style="height: 80%;background-color: gainsboro;margin-top:0.35%;" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#addModal">添加数据</button>
+                
+                <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Bottom popover">
+                    所有学院
+                </button>
+
+                <div style="float:right;margin-top:1%;">
+                    <label for="cname2">课程名称:</label>
+                    <input type="text" id="cname2" name="cname2"/>
+                    <label for="hours2">课程时长:</label>
+                    <input type="text" id="hours2" name="hours2">
+                    <label for="schoolname2">学院编号:</label>
+                    <input type="text" id="schoolname2" name="schoolname2">
+                    <button id="search1" style="height: 80%;background-color: gainsboro;" class="btn btn-default">查询</button>
+                </div>
+            </div>
+            <!-- 表格主体 -->
+            <div class="table-container">
+                <table id="table" class="table table-bordered table-striped table-hover dataTable text-center">
+                        <thead style="background: #d1d6d8;">
+                            <tr>
+                                <th>课程编号</th>
+                                <th>书籍封面</th>
+                                <th>课程名称</th>
+                                <th>开设时常</th>
+                                <th>所属学院</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                            <tbody id="course" style="text-align: center;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="footer" >@lishiyi.com</div>
+</div>
+
+    <script>
+        //上传图片的预览
+        function previewImage() {
+            // alert("上传")
+            var preview = document.querySelector('.my-tag');
+            var file = document.querySelector("#files").files[0];
+            var reader = new FileReader();
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+            reader.addEventListener("load", function () {
+                // alert("上传2")
+                preview.style.backgroundImage = `url(${reader.result})`;
+            }, false);
+        }
+
+        function previewImage1() {
+            // alert("上传")
+            var preview = document.querySelector('.my-tag1');
+            var file = document.querySelector("#files1").files[0];
+            var reader = new FileReader();
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+            reader.addEventListener("load", function () {
+                // alert("上传2")
+                preview.style.backgroundImage = `url(${reader.result})`;
+            }, false);
+        }
+
+        function out(){
+            localStorage.removeItem("token")
+        }
+        $(function (){
+            //获取课程列表数据
+            function getCourseList() {
+                var token = localStorage.getItem("token");
+                console.log(token);
+
+                $.ajax({
+                    url: 'http://localhost:8080/group14/Course/selectAll',
+                    type: 'GET',     
+                    headers: {
+                        'Authorization': token
+                    },
+                    success: function(res) {
+                        if (res.status != 1) return alert('获取数据失败');
+                        var rows = [];
+                        $.each(res.data, function(i, item) {
+                        rows.push('<tr><td style="line-height:80px;">' + item.id + '</td><td>' +
+                        '<image src="E:/IDEA-pro/springst/group14/src/main/webapp/image/' + item.image + '" style="width:60px;height:80px">' +
+                        '</td><td style="line-height:80px;">' +
+                        item.name + '</td><td style="line-height:80px;">' +
+                        item.hours + '</td><td style="line-height:80px;">' + item.schoolname +
+                        '</td><td><a style="line-height:80px;" href="javascript:;" class="edit" data-id="' + item.id + '" data-bs-toggle="modal" data-bs-target="#editModal">编辑</a>' +
+                        '<a>&nbsp;&nbsp</a><a style="line-height:80px;" href="javascript:;" class="del" data-id="' + item.id + '">删除</a></td></tr>');
+                        });
+                        $('#course').empty().append(rows.join(''));
+                    },
+                    error: function(xhr, status, error) {
+                        // alert('Request failed with status:', status);
+                    }
+                });
+            }
+            function getUserName() {
+                var token = localStorage.getItem("token");
+                console.log(token);
+                $.get({
+                    url:'http://localhost:8080/group14/getUsername',
+                    headers: {
+                        'Authorization': token
+                    },
+                    success:function(res){
+                        var username=document.getElementById("username")
+                        username.append(res.data)
+                    },
+                    error:function(){
+                        alert("您还未登录请先登录!")
+                        window.location.href='./login.html'
+                    }
+                    
+                })
+            }
+            
+            getUserName()
+            getCourseList()
+            
+            //显示所有课程
+            $('#menu').on('click','#selectAll',function(){
+                getCourseList()
+            })
+
+            //删除方法
+            $('tbody').on('click','.del',function(){
+                var id = $(this).attr('data-id')
+                if(confirm("确认是否删除？")==1){
+                    var token = localStorage.getItem("token");
+                    console.log(token);
+                    $.get({
+                        url: 'http://localhost:8080/group14/Course/delete',
+                        data: {id:id},
+                        headers: {
+                        'Authorization': token
+                        },
+                        success:function(res){
+                            if (res.status !=1) return alert(res.msg)
+                            else{
+                                alert("删除成功"+res.msg)
+                                getCourseList()
+                            }
+                        }
+                    })
+                }
+            })
+            
+            //添加方法
+            
+            //添加数据
+            $("#save").click(function(){
+                var name = $('#cname').val()
+                var hours = $('#hours').val()
+                var sid = $('#sid').val()
+                var file=$("#files")[0].files
+                var token = localStorage.getItem("token");
+                console.log(token);
+                if(file.length<=0){
+                    // alert("没有上传图片文件")
+                    $.post({
+                        url:'http://localhost:8080/group14/Course/insert',
+                        data:{name:name,hours:hours,sid:sid},
+                        headers: {
+                        'Authorization': token
+                        },
+                        success: function(res){
+                            if (res.status !=1) return alert(res.msg)
+                            else{
+                                alert(res.msg)
+                                getCourseList()
+                            }
+                        }
+                    })
+                }else{
+                    // alert("有文件")
+                    var fd = new FormData()
+                    fd.append("files",file[0])
+                    $.ajax({
+                        method:'POST',
+                        url:'http://localhost:8080/group14/File/fileload',
+                        data:fd,
+                        headers: {
+                            'Authorization': token
+                        },
+                        contentType:false,
+                        processData:false,
+                        success:function(res){
+                            alert("成功")
+                            if (res.status !=1) return alert(res.msg)
+                                    else{
+                                        alert(res.msg)
+                                        getCourseList()
+                                    }
+                        }
+                    })
+                    var filename=file[0].name
+                    $.post({
+                        url:'http://localhost:8080/group14/Course/insert',
+                        data:{name:name,hours:hours,sid:sid,image:filename},
+                        headers: {
+                        'Authorization': token
+                        },
+                        success: function(res){
+                            if (res.status !=1) return alert(res.msg)
+                            else{
+                                alert(res.msg)
+                                getCourseList()
+                            }
+                        }
+                    })
+                }
+                //清空表单
+                cleartable()
+                // alert("添加成功")
+            })
+            //清空表单
+            function cleartable(){
+                $('#files').val("")
+                $('#cname').val("")
+                $('#hours').val("")
+                $('#sid').val("")
+                var preview = document.querySelector('.my-tag');
+                preview.style.backgroundImage = `url("E:/IDEA-pro/springst/group14/src/main/webapp/image/add.jpg")`;
+                // alert("清空成功")
+            }
+            $("#clear").click(function(){
+                cleartable()
+            })
+            //编辑方法
+            //弹出对话框
+            var id
+            $('tbody').on('click','.edit',function(){
+                id = $(this).attr('data-id')
+                console.log(id)
+                var token = localStorage.getItem("token");
+                console.log(token);
+                $.get({
+                    url:"http://localhost:8080/group14/Course/findById",
+                    data:{id:id},
+                    headers: {
+                        'Authorization': token
+                    },
+                    success:function(res){
+                        if (res.status !=1) return alert(res.msg)
+                        else{
+                            if(res.data.image!=null){
+                                var fileurl="E:/IDEA-pro/springst/group14/src/main/webapp/image/"+res.data.image;
+                                var preview = document.querySelector('.my-tag1');
+                                checkImageExists(fileurl)
+                                    .then(function(exists) {
+                                        if (exists) {
+                                        console.log('图片存在');
+                                        preview.style.backgroundImage = `url("${fileurl}")`;
+                                        } else {
+                                        console.log('图片不存在');
+                                        preview.style.backgroundImage = `url("E:/IDEA-pro/springst/group14/src/main/webapp/image/add.jpg")`;
+                                        }
+                                    })
+                                    .catch(function(error) {
+                                        console.log('发生错误:', error);
+                                });
+                                // alert(fileurl)
+                            }else{
+                                var preview = document.querySelector('.my-tag1');
+                                preview.style.backgroundImage = `url("E:/IDEA-pro/springst/group14/src/main/webapp/image/add.jpg")`;
+                            }
+                            $('#cname1').val(res.data.name)
+                            $('#hours1').val(res.data.hours)
+                            $('#sid1').val(res.data.sid)
+                        }
+                    }
+                })
+            })
+            
+            //修改课程数据
+            $("#save1").click(function(){
+                var name = $('#cname1').val()
+                var hours = $('#hours1').val()
+                var sid = $('#sid1').val()
+                var file = $("#files1")[0].files
+                var token = localStorage.getItem("token");
+                console.log(token);
+                console.log(id)
+                if(file.length<=0){
+                    // alert("没有上传图片文件")
+                    $.post({
+                        url:'http://localhost:8080/group14/Course/update',
+                        data:{id:id,name:name,hours:hours,sid:sid},
+                        headers: {
+                            'Authorization': token
+                        },
+                        success:function(res){
+                            if (res.status !=1) return alert(res.msg)
+                            else{
+                                alert(res.msg)
+                                getCourseList()
+                            }
+                        }
+                    })
+                }else{
+                    // alert("有上传图片文件")
+                    var fd = new FormData()
+                    fd.append("files",file[0])
+                    $.ajax({
+                    method:'POST',
+                    url:'http://localhost:8080/group14/File/fileload',
+                    headers: {
+                        'Authorization': token
+                    },
+                    data:fd,
+                    contentType:false,
+                    processData:false,
+                    success:function(res){
+                        alert("成功")
+                        if (res.status !=1) return alert(res.msg)
+                                else{
+                                    alert(res.msg)
+                                    getCourseList()
+                                }
+                    }
+                    })
+                    var filename=file[0].name
+                    $.post({
+                        url:'http://localhost:8080/group14/Course/update',
+                        data:{id:id,name:name,hours:hours,sid:sid,image:filename},
+                        headers: {
+                        'Authorization': token
+                        },
+                        success:function(res){
+                            if (res.status !=1) return alert(res.msg)
+                            else{
+                                alert(res.msg)
+                                getCourseList()
+                            }
+                        }
+                    })
+                }
+                alert("提交成功")
+            })
+        
+            //查询方法
+            $("#search1").click(function(){
+                var name = $('#cname2').val()
+                var hours = $('#hours2').val()
+                var sid = $('#schoolname2').val()
+                var rows = []
+                var token = localStorage.getItem("token");
+                console.log(token);
+                $.get({
+                    url:'http://localhost:8080/group14/Course/select',
+                    data:{name:name,hours:hours,sid:sid},
+                    headers: {
+                        'Authorization': token
+                    },
+                    success: function (res) {    
+                        if(res.status != 1) return alert('获取数据失败')
+                        var rows = []
+                        $.each(res.data, function (i, item) {
+                            rows.push('<tr><td style="line-height:80px;">' + item.id + '</td><td>' + 
+                            '<image src="E:/IDEA-pro/springst/group14/src/main/webapp/image/'+item.image+'" style="width:60px;height:80px">'
+                            + '</td><td style="line-height:80px;">' 
+                            + item.name + '</td><td style="line-height:80px;">'
+                            +item.hours+'</td><td style="line-height:80px;">'+item.schoolname+
+                            '</td><td><a style="line-height:80px;" href="javascript:;" class="edit" data-id="' +item.id+'" data-bs-toggle="modal" data-bs-target="#editModal">编辑</a>'+
+                            '<a>&nbsp;&nbsp</a><a style="line-height:80px;" href="javascript:;" class="del" data-id="' + item.id + '">删除</a></td></tr>')
+                        })
+                        $('#course').empty().append(rows.join(''))
+                    }
+                })
+            })
+
+            // 判断图片资源是否存在
+            function checkImageExists(imageUrl) {
+                return new Promise(function(resolve, reject) {
+                    var img = new Image();
+                    img.onload = function() {
+                    resolve(true);
+                    };
+                    img.onerror = function() {
+                    resolve(false);
+                    };
+                    img.src = imageUrl;
+                });
+            }
+        })
+        function getallschool(){
+            var token = localStorage.getItem("token");
+                console.log(token);
+            $.get({
+                    url:'http://localhost:8080/group14/Course/allSchool',
+                    headers: {
+                        'Authorization': token
+                    },
+                    success: function (res) {
+                        var rows = []
+                        $.each(res, function (i, item) {
+                            rows.push(item.id+":"+item.schoolname)
+                        })
+                        var popover = document.querySelector('[data-bs-toggle="popover"]');
+                        popover.setAttribute("data-bs-content", rows);
+                        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+                        const popoverList = [...popoverTriggerList].map(El => new bootstrap.Popover(El))
+                        return rows;
+                    }
+                })
+        }
+        //所有学院弹出框
+        getallschool()
+        // var popover = document.querySelector('[data-bs-toggle="popover"]');
+        // popover.setAttribute("data-bs-content", rows);
+        // const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        // const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+    </script>
+</body>
+</html>
